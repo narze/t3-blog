@@ -44,6 +44,21 @@ export const postsRouter = createRouter()
         throw new trpc.TRPCError({ code: "UNAUTHORIZED" })
       }
 
+      // If have more than 5 posts, delete the oldest one
+      const posts = await ctx.prisma.post.findMany({
+        where: {
+          userId: ctx.session.user.id,
+        },
+      })
+
+      if (posts.length >= 5) {
+        await ctx.prisma.post.delete({
+          where: {
+            id: posts[0]!.id,
+          },
+        })
+      }
+
       // Create new post
       const post = await ctx.prisma.post.create({
         data: {
