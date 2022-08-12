@@ -40,9 +40,7 @@ const Home: NextPage = () => {
                   ) : (
                     <p>{post.content}</p>
                   )}
-                  <small>
-                    by {post.user.name} ({post.user.email})
-                  </small>
+                  <small>by {post.user.name}</small>
                 </a>
               </Link>
             ))}

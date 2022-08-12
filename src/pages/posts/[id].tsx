@@ -88,9 +88,7 @@ export default function PostViewPage(
             {post.title}
           </h2>
           <p>{post.content}</p>
-          <small>
-            by {post.user.name} ({post.user.email})
-          </small>
+          <small>by {post.user.name}</small>
 
           <Link href={"/"}>
             <a>Home</a>
