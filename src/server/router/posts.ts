@@ -13,6 +13,27 @@ export const postsRouter = createRouter()
       })
     },
   })
+  .query("getById", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const post = await ctx.prisma.post.findFirst({
+        where: {
+          id: input.id,
+        },
+        include: {
+          user: true,
+        },
+      })
+
+      if (!post) {
+        throw new trpc.TRPCError({ code: "NOT_FOUND" })
+      }
+
+      return post
+    },
+  })
   .mutation("create", {
     input: z.object({
       title: z.string(),

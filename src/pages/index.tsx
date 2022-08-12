@@ -32,7 +32,9 @@ const Home: NextPage = () => {
             {posts.map((post) => (
               <Link key={post.id} href={`/posts/${post.id}`}>
                 <a className="link link-hover">
-                  <h2 className="text-2xl">{post.title}</h2>
+                  <h2 key={post.id} className="text-2xl">
+                    {post.title}
+                  </h2>
                   {post.content.length > 280 ? (
                     <p>{post.content.substring(0, 280)}...</p>
                   ) : (
