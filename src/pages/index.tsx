@@ -4,11 +4,10 @@ import { trpc } from "../utils/trpc"
 import LoginButton from "../components/login-button"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import { useState } from "react"
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }])
   const getAllPosts = trpc.useQuery(["posts.getAll"])
-
   const posts = getAllPosts.data ?? []
 
   return (
@@ -47,22 +46,31 @@ const Home: NextPage = () => {
             ))}
           </div>
 
-          <NewPostForm />
+          <NewPostForm onCreate={getAllPosts.refetch} />
         </section>
       </main>
     </>
   )
 }
 
-const NewPostForm = () => {
+const NewPostForm = ({ onCreate }: { onCreate: () => void }) => {
   const { data } = useSession()
   const mutation = trpc.useMutation(["posts.create"])
+  const [title, setTitle] = useState("New Post")
+  const [content, setContent] = useState("")
 
   const createPost = async () => {
-    const title = "New Post"
-    const content = "This is the content"
+    setTitle("")
+    setContent("")
 
-    mutation.mutate({ title, content })
+    mutation.mutate(
+      { title, content },
+      {
+        onSuccess: () => {
+          onCreate()
+        },
+      }
+    )
   }
 
   if (!data?.user) {
@@ -72,9 +80,22 @@ const NewPostForm = () => {
 
   // Render the post form
   return (
-    <button className="btn" onClick={createPost}>
-      Create Post
-    </button>
+    <div className="flex flex-col gap-2">
+      <input
+        type="text"
+        className="input input-bordered"
+        value={title}
+        onChange={(e) => setTitle(e.currentTarget.value)}
+      />
+      <textarea
+        className="textarea textarea-bordered"
+        value={content}
+        onChange={(e) => setContent(e.currentTarget.value)}
+      />
+      <button className="btn" onClick={createPost}>
+        Create Post
+      </button>
+    </div>
   )
 }
 
