@@ -3,12 +3,7 @@ import Head from "next/head"
 import { trpc } from "../utils/trpc"
 import LoginButton from "../components/login-button"
 import Link from "next/link"
-
-type TechnologyCardProps = {
-  name: string
-  description: string
-  documentation: string
-}
+import { useSession } from "next-auth/react"
 
 const Home: NextPage = () => {
   const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }])
@@ -51,44 +46,35 @@ const Home: NextPage = () => {
               </Link>
             ))}
           </div>
+
+          <NewPostForm />
         </section>
       </main>
     </>
   )
 }
 
-const SecretMessage = () => {
-  const secretMessage = trpc.useQuery(["question.getSecretMessage"])
+const NewPostForm = () => {
+  const { data } = useSession()
+  const mutation = trpc.useMutation(["posts.create"])
 
-  if (secretMessage.isLoading) {
-    return <p>Loading the secret message...</p>
+  const createPost = async () => {
+    const title = "New Post"
+    const content = "This is the content"
+
+    mutation.mutate({ title, content })
   }
 
-  if (secretMessage.error) {
-    return <p>ERROR: {secretMessage.error.message}</p>
+  if (!data?.user) {
+    // Render a login button
+    return <LoginButton />
   }
 
-  return <p>Message loaded: {secretMessage.data}</p>
-}
-
-const TechnologyCard = ({
-  name,
-  description,
-  documentation,
-}: TechnologyCardProps) => {
+  // Render the post form
   return (
-    <section className="flex flex-col justify-center p-6 duration-500 border-2 border-gray-500 rounded shadow-xl motion-safe:hover:scale-105">
-      <h2 className="text-lg text-gray-700">{name}</h2>
-      <p className="text-sm text-gray-600">{description}</p>
-      <a
-        className="mt-3 text-sm underline text-violet-500 decoration-dotted underline-offset-2"
-        href={documentation}
-        target="_blank"
-        rel="noreferrer"
-      >
-        Documentation
-      </a>
-    </section>
+    <button className="btn" onClick={createPost}>
+      Create Post
+    </button>
   )
 }
 
