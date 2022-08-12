@@ -51,9 +51,29 @@ const Home: NextPage = () => {
         <div className="pt-6 text-2xl text-blue-500 flex justify-center items-center w-full">
           {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
         </div>
+        <div className="pt-6 text-2xl text-blue-500 flex flex-col justify-center items-center w-full">
+          <h3>question.getSecretMessage()</h3>
+          <div className="border rounded p-4 mt-4 border-blue-400">
+            <SecretMessage />
+          </div>
+        </div>
       </main>
     </>
   )
+}
+
+const SecretMessage = () => {
+  const secretMessage = trpc.useQuery(["question.getSecretMessage"])
+
+  if (secretMessage.isLoading) {
+    return <p>Loading the secret message...</p>
+  }
+
+  if (secretMessage.error) {
+    return <p>ERROR: {secretMessage.error.message}</p>
+  }
+
+  return <p>Message loaded: {secretMessage.data}</p>
 }
 
 const TechnologyCard = ({
