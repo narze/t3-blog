@@ -1,15 +1,16 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { trpc } from "../utils/trpc";
+import type { NextPage } from "next"
+import Head from "next/head"
+import { trpc } from "../utils/trpc"
+import LoginButton from "../components/login-button"
 
 type TechnologyCardProps = {
-  name: string;
-  description: string;
-  documentation: string;
-};
+  name: string
+  description: string
+  documentation: string
+}
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
+  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }])
 
   return (
     <>
@@ -20,6 +21,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container mx-auto flex flex-col items-center justify-center min-h-screen p-4">
+        <LoginButton />
         <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
           Create <span className="text-purple-300">T3</span> App
         </h1>
@@ -51,8 +53,8 @@ const Home: NextPage = () => {
         </div>
       </main>
     </>
-  );
-};
+  )
+}
 
 const TechnologyCard = ({
   name,
@@ -72,7 +74,7 @@ const TechnologyCard = ({
         Documentation
       </a>
     </section>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
