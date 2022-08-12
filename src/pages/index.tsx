@@ -12,20 +12,9 @@ type TechnologyCardProps = {
 
 const Home: NextPage = () => {
   const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }])
-  const posts = [
-    {
-      id: 123,
-      title: "Hello World",
-      content: "This is a simple hello world example.",
-      author: "narze",
-    },
-    {
-      id: 234,
-      title: "Hello tRPC!",
-      content: "You'll love it!",
-      author: "narze",
-    },
-  ]
+  const getAllPosts = trpc.useQuery(["posts.getAll"])
+
+  const posts = getAllPosts.data ?? []
 
   return (
     <>
@@ -50,8 +39,14 @@ const Home: NextPage = () => {
               <Link key={post.id} href={`/posts/${post.id}`}>
                 <a className="link link-hover">
                   <h2 className="text-2xl">{post.title}</h2>
-                  <p>{post.content}</p>
-                  <small>by {post.author}</small>
+                  {post.content.length > 280 ? (
+                    <p>{post.content.substring(0, 280)}...</p>
+                  ) : (
+                    <p>{post.content}</p>
+                  )}
+                  <small>
+                    by {post.user.name} ({post.user.email})
+                  </small>
                 </a>
               </Link>
             ))}
