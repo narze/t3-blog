@@ -4,16 +4,15 @@ import {
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from "next"
-import { prisma } from "../../server/db/client"
-// import { appRouter } from 'server/routers/_app';
+import Head from "next/head"
+import Link from "next/link"
 import superjson from "superjson"
+
+import { prisma } from "../../server/db/client"
 import { appRouter } from "../../server/router"
-// import { trpc } from 'utils/trpc';
 import { createContext } from "../../server/router/context"
 import { trpc } from "../../utils/trpc"
-import Head from "next/head"
 import LoginButton from "../../components/login-button"
-import Link from "next/link"
 
 export async function getStaticProps(
   context: GetStaticPropsContext<{ id: string }>
